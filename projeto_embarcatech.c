@@ -67,44 +67,39 @@ float measure_distance() {
     return distance;
 }
 
-// Callback de interrupção para os botões
-void gpio_irq_callback(uint gpio, uint32_t event_mask) {
-  if (gpio == button_a) {
-    working = true; // Ativa o sistema
-  }
-  if (gpio == button_b) {
-    working = false; // Desativa o sistema
-    setup_pwm(BUZZER_PIN, 0, 50);
-    set_color(0,0,0);
-  }
+// Inicializa gpios
+void setup_gpios() {
+
+  // Inicialização dos pinos GPIO
+  gpio_init(TRIG_PIN);
+  gpio_init(ECHO_PIN);
+  gpio_set_dir(TRIG_PIN, GPIO_OUT);
+  gpio_set_dir(ECHO_PIN, GPIO_IN);
+
+  // Inicializacao dos pinos dos LEDS
+  gpio_init(LED_RED);
+  gpio_init(LED_GREEN);
+  gpio_init(LED_BLUE);
+
+  gpio_set_dir(LED_RED,GPIO_OUT);
+  gpio_set_dir(LED_GREEN, GPIO_OUT);
+  gpio_set_dir(LED_BLUE, GPIO_OUT);
+
+  // Inicialização dos botoes e seta eles como pull up
+  gpio_init(button_a);
+  gpio_init(button_b);
+  gpio_set_dir(button_a, GPIO_IN);
+  gpio_set_dir(button_b, GPIO_IN);
+  gpio_pull_up(button_a);
+  gpio_pull_up(button_b);
+
 }
+
 
 int main() {
     stdio_init_all();
+    setup_gpios();  // Inicializa gpios
     
-    // Inicialização dos pinos GPIO
-    gpio_init(TRIG_PIN);
-    gpio_init(ECHO_PIN);
-    gpio_set_dir(TRIG_PIN, GPIO_OUT);
-    gpio_set_dir(ECHO_PIN, GPIO_IN);
-
-    // Inicializacao dos pinos dos LEDS
-    gpio_init(LED_RED);
-    gpio_init(LED_GREEN);
-    gpio_init(LED_BLUE);
-
-    gpio_set_dir(LED_RED,GPIO_OUT);
-    gpio_set_dir(LED_GREEN, GPIO_OUT);
-    gpio_set_dir(LED_BLUE, GPIO_OUT);
-
-    // Inicialização dos botoes e seta eles como pull up
-    gpio_init(button_a);
-    gpio_init(button_b);
-    gpio_set_dir(button_a, GPIO_IN);
-    gpio_set_dir(button_b, GPIO_IN);
-    gpio_pull_up(button_a);
-    gpio_pull_up(button_b);
-
     // loop principal
     while (true) {
 
